@@ -1,0 +1,93 @@
+{
+  "name": "smartform-extension",
+  "version": "1.0.0",
+  "description": "自動フォーム入力アシスタント - テスト効率化のためのChrome拡張機能",
+  "author": "SmartForm Development Team",
+  "license": "MIT",
+  "keywords": [
+    "chrome-extension",
+    "form-filler",
+    "automation",
+    "testing",
+    "form-automation",
+    "test-efficiency"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/smartform-extension"
+  },
+  "scripts": {
+    "build": "echo 'No build process required for this extension'",
+    "lint": "echo 'Add ESLint configuration if needed'",
+    "test": "echo 'Add testing framework if needed'",
+    "zip": "zip -r smartform-extension.zip . -x '*.git*' 'node_modules/*' '*.md' 'package*.json' 'generate-icons.html'"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.0.0"
+  },
+  "engines": {
+    "chrome": ">=88.0.0"
+  },
+  "manifest": {
+    "version": 3,
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting"
+    ]
+  },
+  "features": {
+    "form_detection": "ページ内のフォーム要素を自動検出",
+    "profile_management": "フォームプロファイルの保存・管理",
+    "auto_fill": "保存されたプロファイルによる自動入力",
+    "security": "ローカルストレージによる安全なデータ管理",
+    "export_import": "プロファイルのエクスポート・インポート機能",
+    "domain_filtering": "特定ドメインの除外設定"
+  },
+  "chrome_extension": {
+    "files": {
+      "manifest.json": "拡張機能の設定ファイル",
+      "popup.html": "ポップアップUI",
+      "popup.css": "ポップアップスタイル",
+      "popup.js": "ポップアップロジック",
+      "content.js": "メインの機能実装（フォーム検出・入力）",
+      "content.css": "コンテンツスタイル",
+      "background.js": "バックグラウンド処理",
+      "options.html": "設定画面",
+      "options.css": "設定画面スタイル",
+      "options.js": "設定画面ロジック"
+    },
+    "icons": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "installation": {
+    "steps": [
+      "1. Chromeの拡張機能管理画面（chrome://extensions/）を開く",
+      "2. デベロッパーモードを有効にする",
+      "3. 「パッケージ化されていない拡張機能を読み込む」をクリック",
+      "4. この拡張機能フォルダを選択",
+      "5. generate-icons.htmlでアイコンファイルを生成（必要に応じて）"
+    ]
+  },
+  "security_notes": [
+    "パスワードやクレジットカード情報は保存しないでください",
+    "すべてのデータはローカルに保存されます",
+    "外部サーバーへのデータ送信は行いません",
+    "テスト環境での使用を推奨します"
+  ],
+  "browser_compatibility": {
+    "chrome": ">=88.0.0",
+    "manifest_version": 3,
+    "apis": [
+      "chrome.storage",
+      "chrome.tabs",
+      "chrome.scripting",
+      "chrome.runtime"
+    ]
+  }
+}

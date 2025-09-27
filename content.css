@@ -1,0 +1,295 @@
+.smartform-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: none;
+}
+
+.smartform-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 10001;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.smartform-panel-header {
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.smartform-panel-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.smartform-panel-body {
+  padding: 20px;
+}
+
+.smartform-field-group {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.smartform-field-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.smartform-field-info {
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 12px;
+}
+
+.smartform-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.smartform-input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.smartform-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.smartform-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.smartform-btn-primary {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+}
+
+.smartform-btn-primary:hover {
+  background: linear-gradient(135deg, #3182ce, #2c5282);
+  transform: translateY(-1px);
+}
+
+.smartform-btn-secondary {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+.smartform-btn-secondary:hover {
+  background: #cbd5e0;
+}
+
+.smartform-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 10002;
+  max-width: 300px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+}
+
+.smartform-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.smartform-toast.success {
+  border-left: 4px solid #48bb78;
+}
+
+.smartform-toast.error {
+  border-left: 4px solid #f56565;
+}
+
+.smartform-toast.info {
+  border-left: 4px solid #4299e1;
+}
+
+.smartform-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #4299e1, #48bb78);
+  z-index: 10003;
+  transition: width 0.3s ease;
+}
+
+.smartform-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ed8936;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
+}
+
+.smartform-field-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4299e1;
+  color: white;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.smartform-field-indicator.saved {
+  background: #48bb78;
+}
+
+.smartform-field-indicator.filled {
+  background: #ed8936;
+}
+
+@keyframes smartform-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.smartform-highlight {
+  animation: smartform-pulse 0.5s ease;
+}
+
+.smartform-scanning .smartform-highlight {
+  outline: 2px dashed #4299e1 !important;
+  outline-offset: 2px !important;
+  animation: smartform-pulse 1s infinite !important;
+}
+
+.smartform-mini-popup {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10001;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.smartform-mini-popup.show {
+  opacity: 1;
+}
+
+.smartform-field-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10002;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.smartform-field-menu-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  color: #4a5568;
+  transition: background 0.2s ease;
+}
+
+.smartform-field-menu-item:hover {
+  background: #f7fafc;
+}
+
+.smartform-field-menu-item:active {
+  background: #edf2f7;
+}
+
+.smartform-floating-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(66, 153, 225, 0.4);
+  z-index: 10000;
+  transition: all 0.3s ease;
+  display: none;
+}
+
+.smartform-floating-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(66, 153, 225, 0.6);
+}
+
+.smartform-floating-button.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

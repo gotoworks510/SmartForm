@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartForm</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📝 SmartForm</h1>
+    </div>
+
+    <div class="status" id="status">
+      <span class="status-indicator" id="statusIndicator"></span>
+      <span id="statusText">ページを解析中...</span>
+    </div>
+
+    <div class="actions">
+      <button id="scanFormsBtn" class="btn btn-primary">
+        <span class="icon">🔍</span>
+        フォームをスキャン
+      </button>
+
+      <button id="fillFormsBtn" class="btn btn-secondary" disabled>
+        <span class="icon">📝</span>
+        フォームを自動入力
+      </button>
+
+      <button id="saveCurrentBtn" class="btn btn-accent" disabled>
+        <span class="icon">💾</span>
+        現在の値を保存
+      </button>
+    </div>
+
+    <div class="form-count" id="formCount" style="display: none;">
+      <span id="formCountText"></span>
+    </div>
+
+    <div class="quick-actions">
+      <button id="optionsBtn" class="btn btn-link">
+        <span class="icon">⚙️</span>
+        設定
+      </button>
+
+      <button id="helpBtn" class="btn btn-link">
+        <span class="icon">❓</span>
+        ヘルプ
+      </button>
+    </div>
+
+    <div class="footer">
+      <small>v1.0.0 - テスト効率化のために</small>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
