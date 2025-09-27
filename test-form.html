@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartForm テスト用フォーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="password"],
+        input[type="number"], textarea, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkbox-item input, .radio-item input {
+            width: auto;
+        }
+        .submit-btn {
+            background: #007cba;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background: #005a87;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007cba;
+            padding-bottom: 5px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <h1>📝 SmartForm テスト用フォーム</h1>
+
+    <div class="instructions">
+        <h3>テスト手順</h3>
+        <ol>
+            <li>このフォームに適当な値を入力</li>
+            <li>SmartForm拡張機能で「フォームをスキャン」</li>
+            <li>「現在の値を保存」でプロファイルを作成</li>
+            <li>フォームをクリア</li>
+            <li>「フォームを自動入力」で復元をテスト</li>
+        </ol>
+    </div>
+
+    <form id="testForm" action="#" method="post">
+        <!-- テキスト系入力 -->
+        <div class="form-section">
+            <h2>テキスト入力</h2>
+
+            <div class="form-group">
+                <label for="username">ユーザー名</label>
+                <input type="text" id="username" name="username" placeholder="山田太郎">
+            </div>
+
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" name="email" placeholder="test@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" placeholder="テスト用パスワード">
+            </div>
+
+            <div class="form-group">
+                <label for="age">年齢</label>
+                <input type="number" id="age" name="age" min="18" max="100" placeholder="25">
+            </div>
+
+            <div class="form-group">
+                <label for="bio">自己紹介</label>
+                <textarea id="bio" name="bio" placeholder="簡単な自己紹介を入力してください"></textarea>
+            </div>
+        </div>
+
+        <!-- セレクトボックス -->
+        <div class="form-section">
+            <h2>セレクトボックス</h2>
+
+            <div class="form-group">
+                <label for="country">国</label>
+                <select id="country" name="country">
+                    <option value="">選択してください</option>
+                    <option value="japan">日本</option>
+                    <option value="usa">アメリカ</option>
+                    <option value="korea">韓国</option>
+                    <option value="china">中国</option>
+                    <option value="other">その他</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="job">職業</label>
+                <select id="job" name="job">
+                    <option value="">選択してください</option>
+                    <option value="engineer">エンジニア</option>
+                    <option value="designer">デザイナー</option>
+                    <option value="manager">マネージャー</option>
+                    <option value="student">学生</option>
+                    <option value="freelancer">フリーランス</option>
+                    <option value="other">その他</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ラジオボタン -->
+        <div class="form-section">
+            <h2>ラジオボタン</h2>
+
+            <div class="form-group">
+                <label>性別</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="male" name="gender" value="male">
+                        <label for="male">男性</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="female" name="gender" value="female">
+                        <label for="female">女性</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="other_gender" name="gender" value="other">
+                        <label for="other_gender">その他</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>経験年数</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="exp1" name="experience" value="1-2">
+                        <label for="exp1">1-2年</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="exp2" name="experience" value="3-5">
+                        <label for="exp2">3-5年</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="exp3" name="experience" value="6-10">
+                        <label for="exp3">6-10年</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="exp4" name="experience" value="10+">
+                        <label for="exp4">10年以上</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- チェックボックス -->
+        <div class="form-section">
+            <h2>チェックボックス</h2>
+
+            <div class="form-group">
+                <label>興味のある技術（複数選択可）</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech1" name="technologies" value="javascript">
+                        <label for="tech1">JavaScript</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech2" name="technologies" value="python">
+                        <label for="tech2">Python</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech3" name="technologies" value="react">
+                        <label for="tech3">React</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech4" name="technologies" value="nodejs">
+                        <label for="tech4">Node.js</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tech5" name="technologies" value="database">
+                        <label for="tech5">データベース</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                    <label for="newsletter">ニュースレターを購読する</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms" name="terms" value="agreed">
+                    <label for="terms">利用規約に同意する</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div class="form-section">
+            <button type="submit" class="submit-btn">送信</button>
+            <button type="reset" class="submit-btn" style="background: #666; margin-left: 10px;">リセット</button>
+        </div>
+    </form>
+
+    <script>
+        // フォーム送信をキャンセル（テスト用）
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('テスト用フォームなので送信は実行されません');
+        });
+
+        // リセットボタンの確認
+        document.querySelector('button[type="reset"]').addEventListener('click', function(e) {
+            if (!confirm('フォームをリセットしますか？')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

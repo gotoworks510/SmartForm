@@ -254,6 +254,23 @@ if (typeof window.SmartFormContent === 'undefined') {
     const label = this.findLabel(input);
     const placeholder = input.placeholder || input.getAttribute('aria-label') || '';
 
+    // フィールドタイプに応じて値を取得
+    let value = '';
+    let additionalData = {};
+
+    if (input.tagName === 'SELECT') {
+      value = input.value;
+      additionalData.selectedIndex = input.selectedIndex;
+    } else if (input.type === 'checkbox' || input.type === 'radio') {
+      value = input.checked;
+      additionalData.inputValue = input.value; // actual input value for radio buttons
+      if (input.type === 'radio') {
+        additionalData.radioGroup = input.name; // group name for radio buttons
+      }
+    } else {
+      value = input.value || '';
+    }
+
     return {
       id: input.id || `field_${index}`,
       name: input.name || '',
@@ -261,11 +278,12 @@ if (typeof window.SmartFormContent === 'undefined') {
       selector: this.generateSelector(input),
       label: label,
       placeholder: placeholder,
-      value: input.value || '',
+      value: value,
       required: input.required,
       maxLength: input.maxLength > 0 ? input.maxLength : null,
       pattern: input.pattern || '',
-      options: this.getSelectOptions(input)
+      options: this.getSelectOptions(input),
+      ...additionalData
     };
   }
 
@@ -490,12 +508,35 @@ if (typeof window.SmartFormContent === 'undefined') {
       element.classList.add('smartform-filled');
 
       if (element.tagName === 'SELECT') {
-        element.value = value;
+        // SELECT要素の処理
+        if (field.selectedIndex !== undefined && field.selectedIndex >= 0) {
+          element.selectedIndex = field.selectedIndex;
+        } else {
+          element.value = value;
+        }
         element.dispatchEvent(new Event('change', { bubbles: true }));
-      } else if (element.type === 'checkbox' || element.type === 'radio') {
-        element.checked = value === 'true' || value === true;
+
+      } else if (element.type === 'checkbox') {
+        // Checkbox要素の処理
+        element.checked = value === true || value === 'true';
         element.dispatchEvent(new Event('change', { bubbles: true }));
+
+      } else if (element.type === 'radio') {
+        // Radio要素の処理
+        if (field.radioGroup && field.inputValue) {
+          // グループ内の指定された値のradioを選択
+          const radioElements = document.querySelectorAll(`input[type="radio"][name="${field.radioGroup}"]`);
+          radioElements.forEach(radio => {
+            radio.checked = radio.value === field.inputValue && value === true;
+          });
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+          element.checked = value === true || value === 'true';
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
       } else {
+        // テキスト系要素の処理
         element.focus();
         element.value = value;
         element.dispatchEvent(new Event('input', { bubbles: true }));
@@ -524,19 +565,35 @@ if (typeof window.SmartFormContent === 'undefined') {
             const element = document.querySelector(field.selector);
             if (element) {
               let value = '';
+              let additionalData = {};
+              let shouldSave = false;
 
               if (element.tagName === 'SELECT') {
                 value = element.value;
-              } else if (element.type === 'checkbox' || element.type === 'radio') {
+                additionalData.selectedIndex = element.selectedIndex;
+                shouldSave = true; // Always save select values
+
+              } else if (element.type === 'checkbox') {
                 value = element.checked;
+                additionalData.inputValue = element.value;
+                shouldSave = true; // Always save checkbox state (true/false)
+
+              } else if (element.type === 'radio') {
+                value = element.checked;
+                additionalData.inputValue = element.value;
+                additionalData.radioGroup = element.name;
+                shouldSave = true; // Always save radio state
+
               } else {
                 value = element.value;
+                shouldSave = value !== '' && value !== null && value !== undefined;
               }
 
-              if (value !== '' && value !== null && value !== undefined) {
+              if (shouldSave) {
                 values.push({
                   ...field,
-                  value: value
+                  value: value,
+                  ...additionalData
                 });
               }
             }
