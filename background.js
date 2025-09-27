@@ -135,12 +135,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 // chrome.commands API は manifest で commands を定義していない場合は使用しない
-if (chrome.commands && chrome.commands.onCommand) {
-  chrome.commands.onCommand.addListener((command) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0] && !tabs[0].url.startsWith('chrome')) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: command });
-      }
+try {
+  if (chrome.commands && typeof chrome.commands.onCommand !== 'undefined') {
+    chrome.commands.onCommand.addListener((command) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0] && !tabs[0].url.startsWith('chrome')) {
+          chrome.tabs.sendMessage(tabs[0].id, { action: command });
+        }
+      });
     });
-  });
+  }
+} catch (error) {
+  console.log('chrome.commands API not available:', error.message);
 }

@@ -1,6 +1,11 @@
-// 重複宣言を防ぐ
-if (typeof window.SmartFormContent === 'undefined') {
-  window.SmartFormContent = class SmartFormContent {
+// 重複実行を完全に防ぐ
+if (window.smartFormContentLoaded) {
+  console.log('SmartForm Content Script already loaded, skipping...');
+} else {
+  window.smartFormContentLoaded = true;
+  console.log('Loading SmartForm Content Script...');
+
+class SmartFormContent {
   constructor() {
     this.forms = [];
     this.isInitialized = false;
@@ -716,27 +721,24 @@ if (typeof window.SmartFormContent === 'undefined') {
     await this.scanForms();
     return await this.fillForms();
   }
-  }; // クラス定義の終了
 }
 
-// Prevent multiple initializations
-if (!window.smartFormContentScript) {
-  window.smartFormContentScript = true;
-
-  function initializeSmartForm() {
-    try {
-      if (!window.smartFormInstance && window.SmartFormContent) {
-        console.log('Initializing SmartForm content script...');
-        window.smartFormInstance = new window.SmartFormContent();
-      }
-    } catch (error) {
-      console.error('Failed to initialize SmartForm:', error);
+// Initialize SmartForm instance
+function initializeSmartForm() {
+  try {
+    if (!window.smartFormInstance) {
+      console.log('Initializing SmartForm content script...');
+      window.smartFormInstance = new SmartFormContent();
     }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeSmartForm);
-  } else {
-    initializeSmartForm();
+  } catch (error) {
+    console.error('Failed to initialize SmartForm:', error);
   }
 }
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSmartForm);
+} else {
+  initializeSmartForm();
+}
+
+} // End of protection block

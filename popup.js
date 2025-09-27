@@ -8,7 +8,9 @@ class SmartFormPopup {
   async initializePopup() {
     await this.getCurrentTab();
     this.bindEvents();
-    await this.scanCurrentPage();
+
+    // 自動スキャンは行わず、手動でのスキャンを促す
+    this.updateStatus('「フォームをスキャン」ボタンをクリックしてください', 'default');
   }
 
   async getCurrentTab() {
@@ -90,19 +92,45 @@ class SmartFormPopup {
 
   async initializeContentScript() {
     try {
-      // Content Scriptを強制的に再注入
+      // 現在のタブがContent Scriptを受け入れ可能かチェック
+      if (this.currentTab.url.startsWith('chrome://') ||
+          this.currentTab.url.startsWith('chrome-extension://') ||
+          this.currentTab.url.startsWith('edge://') ||
+          this.currentTab.url.startsWith('about:')) {
+        throw new Error('Cannot access special pages');
+      }
+
+      console.log('Injecting Content Script...');
+
+      // 既存のスクリプトをクリーンアップ
+      await chrome.scripting.executeScript({
+        target: { tabId: this.currentTab.id },
+        func: () => {
+          if (window.smartFormContentLoaded) {
+            console.log('Clearing existing SmartForm instance...');
+            window.smartFormContentLoaded = false;
+            window.smartFormInstance = null;
+          }
+        }
+      });
+
+      // 少し待ってからContent Scriptを注入
+      await new Promise(resolve => setTimeout(resolve, 200));
+
       await chrome.scripting.executeScript({
         target: { tabId: this.currentTab.id },
         files: ['content.js']
       });
 
-      // 少し待ってから接続をチェック
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 初期化完了まで待機
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       const isConnected = await this.checkContentScriptConnection();
       if (!isConnected) {
         throw new Error('Content Script initialization failed');
       }
+
+      console.log('Content Script initialized successfully');
     } catch (error) {
       console.error('Failed to initialize content script:', error);
       throw error;
