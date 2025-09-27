@@ -147,10 +147,11 @@ if (typeof window.SmartFormContent === 'undefined') {
   }
 
   async scanForms() {
-    console.log('Starting form scan...');
+    console.log('🔍 Starting comprehensive form scan...');
 
     try {
       this.forms = [];
+      let totalFieldsDetected = 0;
 
       // Wait for DOM to be ready
       if (document.readyState === 'loading') {
@@ -159,53 +160,81 @@ if (typeof window.SmartFormContent === 'undefined') {
         });
       }
 
-      const formElements = document.querySelectorAll('form, div[class*="form"], div[id*="form"]');
-      console.log(`Found ${formElements.length} potential form containers`);
+      // Step 1: 基本的なフォーム要素をスキャン
+      const formElements = document.querySelectorAll('form');
+      console.log(`📋 Found ${formElements.length} <form> elements`);
 
       for (const formElement of formElements) {
         try {
           const formData = await this.analyzeForm(formElement);
           if (formData.fields.length > 0) {
             this.forms.push(formData);
-            console.log(`Added form with ${formData.fields.length} fields`);
+            totalFieldsDetected += formData.fields.length;
+            console.log(`✅ Added <form> with ${formData.fields.length} fields (ID: ${formElement.id || 'no-id'})`);
+          } else {
+            console.log(`⚠️ Skipped empty <form> (ID: ${formElement.id || 'no-id'})`);
           }
         } catch (error) {
-          console.warn('Error analyzing form element:', error);
+          console.warn('❌ Error analyzing <form> element:', error);
         }
       }
 
-      // If no forms found, try to scan entire document for input fields
-      if (this.forms.length === 0) {
-        console.log('No forms found, scanning for standalone inputs...');
-        const inputs = document.querySelectorAll('input, textarea, select');
-        console.log(`Found ${inputs.length} input elements`);
+      // Step 2: フォーム関連のクラス/IDを持つdivをスキャン
+      const formLikeDivs = document.querySelectorAll('div[class*="form"], div[id*="form"], div[class*="Form"], div[id*="Form"]');
+      console.log(`📦 Found ${formLikeDivs.length} form-like div elements`);
 
-        if (inputs.length > 0) {
-          try {
-            const formData = await this.analyzeForm(document.body);
-            if (formData.fields.length > 0) {
-              this.forms.push(formData);
-              console.log(`Added standalone form with ${formData.fields.length} fields`);
-            }
-          } catch (error) {
-            console.warn('Error analyzing standalone inputs:', error);
+      for (const divElement of formLikeDivs) {
+        try {
+          const formData = await this.analyzeForm(divElement);
+          if (formData.fields.length > 0) {
+            this.forms.push(formData);
+            totalFieldsDetected += formData.fields.length;
+            console.log(`✅ Added form-like div with ${formData.fields.length} fields (class: ${divElement.className || 'no-class'})`);
           }
+        } catch (error) {
+          console.warn('❌ Error analyzing form-like div:', error);
         }
       }
 
+      // Step 3: 独立したinput要素をスキャン（フォームに属さないもの）
+      const allInputs = document.querySelectorAll('input, textarea, select');
+      const orphanInputs = Array.from(allInputs).filter(input => !input.closest('form'));
+      console.log(`🔗 Found ${orphanInputs.length} orphan input elements (not in <form>)`);
+
+      if (orphanInputs.length > 0) {
+        try {
+          const orphanFormData = await this.analyzeForm(document.body, true); // orphan mode
+          if (orphanFormData.fields.length > 0) {
+            this.forms.push(orphanFormData);
+            totalFieldsDetected += orphanFormData.fields.length;
+            console.log(`✅ Added orphan inputs as single form with ${orphanFormData.fields.length} fields`);
+          }
+        } catch (error) {
+          console.warn('❌ Error analyzing orphan inputs:', error);
+        }
+      }
+
+      // Step 4: 結果のまとめ
       this.highlightForms();
+
+      console.log(`\n📊 Scan Results Summary:`);
+      console.log(`  • Forms detected: ${this.forms.length}`);
+      console.log(`  • Total fields: ${totalFieldsDetected}`);
+      console.log(`  • Input elements on page: ${allInputs.length}`);
 
       const result = {
         success: true,
         forms: this.forms,
-        message: `${this.forms.length}個のフォームが見つかりました`
+        totalFields: totalFieldsDetected,
+        totalInputs: allInputs.length,
+        message: `${this.forms.length}個のフォーム (${totalFieldsDetected}個のフィールド) が見つかりました`
       };
 
-      console.log('Form scan completed:', result);
+      console.log('✅ Form scan completed successfully');
       return result;
 
     } catch (error) {
-      console.error('Error scanning forms:', error);
+      console.error('❌ Error during form scan:', error);
       return {
         success: false,
         error: error.message
@@ -213,25 +242,46 @@ if (typeof window.SmartFormContent === 'undefined') {
     }
   }
 
-  async analyzeForm(formElement) {
+  async analyzeForm(formElement, isOrphanMode = false) {
     const fields = [];
-    const inputs = formElement.querySelectorAll('input, textarea, select');
+    let inputs;
+
+    if (isOrphanMode) {
+      // Orphan mode: only select inputs that are NOT inside any form
+      inputs = document.querySelectorAll('input, textarea, select');
+      inputs = Array.from(inputs).filter(input => !input.closest('form'));
+    } else {
+      // Normal mode: select inputs within the given element
+      inputs = formElement.querySelectorAll('input, textarea, select');
+    }
+
+    console.log(`🔍 Analyzing ${isOrphanMode ? 'orphan' : 'regular'} form with ${inputs.length} input elements`);
 
     inputs.forEach((input, index) => {
       if (this.isValidInput(input)) {
         const fieldData = this.extractFieldData(input, index);
         if (fieldData) {
           fields.push(fieldData);
+          console.log(`  ✓ Added field: ${fieldData.type} - ${fieldData.label || fieldData.name || fieldData.id}`);
+        } else {
+          console.log(`  ⚠️ Skipped field: ${input.type} - hidden or invalid`);
         }
+      } else {
+        console.log(`  ❌ Invalid input: ${input.type} (${input.id || input.name || 'no-id'})`);
       }
     });
 
+    const formId = isOrphanMode
+      ? 'orphan_inputs_form'
+      : (formElement.id || `form_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+
     return {
-      id: formElement.id || `form_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      selector: this.generateSelector(formElement),
+      id: formId,
+      selector: isOrphanMode ? 'body' : this.generateSelector(formElement),
       fields: fields,
       url: window.location.href,
-      title: document.title
+      title: document.title,
+      isOrphan: isOrphanMode
     };
   }
 

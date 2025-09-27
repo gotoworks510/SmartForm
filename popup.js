@@ -58,8 +58,13 @@ class SmartFormPopup {
 
       if (response && response.success) {
         this.formsData = response.forms;
-        this.updateStatus(`${response.forms.length}個のフォームが見つかりました`, 'ready');
-        this.updateFormCount(response.forms.length);
+
+        // より詳細な情報を表示
+        const message = response.message || `${response.forms.length}個のフォームが見つかりました`;
+        this.updateStatus(message, 'ready');
+
+        // フォーム数とフィールド数の両方を表示
+        this.updateFormCount(response.forms.length, response.totalFields, response.totalInputs);
         this.enableButtons();
       } else {
         const errorMsg = response?.error || 'フォームが見つかりませんでした';
@@ -233,15 +238,30 @@ class SmartFormPopup {
     }
   }
 
-  updateFormCount(count) {
+  updateFormCount(formCount, fieldCount = null, totalInputs = null) {
     const formCountEl = document.getElementById('formCount');
     const formCountText = document.getElementById('formCountText');
 
-    if (count > 0) {
-      formCountText.textContent = `${count}個のフォームが検出されました`;
+    if (formCount > 0) {
+      let text = `${formCount}個のフォームが検出されました`;
+
+      if (fieldCount !== null) {
+        text += ` (${fieldCount}個のフィールド)`;
+      }
+
+      if (totalInputs !== null && totalInputs !== fieldCount) {
+        text += `\nページ内の入力要素: ${totalInputs}個`;
+      }
+
+      formCountText.innerHTML = text.replace('\n', '<br>');
       formCountEl.style.display = 'block';
     } else {
-      formCountEl.style.display = 'none';
+      if (totalInputs !== null && totalInputs > 0) {
+        formCountText.innerHTML = `フォームなし<br>入力要素: ${totalInputs}個`;
+        formCountEl.style.display = 'block';
+      } else {
+        formCountEl.style.display = 'none';
+      }
     }
   }
 
