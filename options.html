@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartForm - 設定</title>
+  <title>SmartForm - Settings</title>
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
@@ -11,17 +11,17 @@
     <header class="header">
       <div class="header-content">
         <div class="header-text">
-          <h1>📝 SmartForm 設定</h1>
-          <p>フォーム自動入力の設定とプロファイル管理</p>
+          <h1>📝 SmartForm Settings</h1>
+          <p>Configure auto-fill settings and manage profiles</p>
         </div>
       </div>
     </header>
 
     <nav class="nav-tabs">
-      <button class="nav-tab active" data-tab="profiles">プロファイル管理</button>
-      <button class="nav-tab" data-tab="settings">基本設定</button>
-      <button class="nav-tab" data-tab="security">セキュリティ</button>
-      <button class="nav-tab" data-tab="help">ヘルプ</button>
+      <button class="nav-tab active" data-tab="profiles">Profile Management</button>
+      <button class="nav-tab" data-tab="settings">General Settings</button>
+      <button class="nav-tab" data-tab="security">Security</button>
+      <button class="nav-tab" data-tab="help">Help</button>
     </nav>
 
     <main class="main-content">
@@ -29,19 +29,19 @@
       <div id="profiles-tab" class="tab-content active">
         <div class="section">
           <div class="section-header">
-            <h2>保存済みプロファイル</h2>
+            <h2>Saved Profiles</h2>
             <div class="section-actions">
               <button id="importBtn" class="btn btn-secondary">
                 <span class="icon">📥</span>
-                インポート
+                Import
               </button>
               <button id="exportBtn" class="btn btn-secondary">
                 <span class="icon">📤</span>
-                エクスポート
+                Export
               </button>
               <button id="clearAllBtn" class="btn btn-danger">
                 <span class="icon">🗑️</span>
-                全削除
+                Clear All
               </button>
             </div>
           </div>
@@ -49,22 +49,22 @@
           <div class="profile-stats">
             <div class="stat-card">
               <span class="stat-number" id="totalProfiles">0</span>
-              <span class="stat-label">総プロファイル数</span>
+              <span class="stat-label">Total Profiles</span>
             </div>
             <div class="stat-card">
               <span class="stat-number" id="totalDomains">0</span>
-              <span class="stat-label">対象ドメイン数</span>
+              <span class="stat-label">Total Domains</span>
             </div>
             <div class="stat-card">
               <span class="stat-number" id="lastUsed">-</span>
-              <span class="stat-label">最終使用</span>
+              <span class="stat-label">Last Used</span>
             </div>
           </div>
 
           <div class="search-section">
-            <input type="text" id="searchProfiles" class="search-input" placeholder="プロファイルを検索...">
+            <input type="text" id="searchProfiles" class="search-input" placeholder="Search profiles...">
             <select id="filterDomain" class="filter-select">
-              <option value="">すべてのドメイン</option>
+              <option value="">All Domains</option>
             </select>
           </div>
 
@@ -77,57 +77,57 @@
       <!-- 基本設定タブ -->
       <div id="settings-tab" class="tab-content">
         <div class="section">
-          <h2>基本設定</h2>
+          <h2>General Settings</h2>
 
           <div class="setting-group">
             <div class="setting-item">
               <label class="setting-label">
                 <input type="checkbox" id="autoSave" class="setting-checkbox">
-                <span class="setting-title">自動保存</span>
+                <span class="setting-title">Auto Save</span>
               </label>
-              <p class="setting-description">フォーム入力時に自動でプロファイルを保存</p>
+              <p class="setting-description">Automatically save profiles when filling forms</p>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
                 <input type="checkbox" id="autoFill" class="setting-checkbox">
-                <span class="setting-title">自動入力</span>
+                <span class="setting-title">Auto Fill</span>
               </label>
-              <p class="setting-description">ページ読み込み時に自動でフォームを入力</p>
+              <p class="setting-description">Automatically fill forms when page loads</p>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
                 <input type="checkbox" id="showNotifications" class="setting-checkbox">
-                <span class="setting-title">通知表示</span>
+                <span class="setting-title">Show Notifications</span>
               </label>
-              <p class="setting-description">操作結果の通知を表示</p>
+              <p class="setting-description">Display notifications for operations</p>
             </div>
           </div>
 
           <div class="setting-group">
             <div class="setting-item">
               <label class="setting-label">
-                <span class="setting-title">最大プロファイル数</span>
+                <span class="setting-title">Max Profiles</span>
               </label>
               <input type="number" id="maxProfiles" class="setting-input" min="10" max="1000" value="100">
-              <p class="setting-description">保存できるプロファイルの最大数</p>
+              <p class="setting-description">Maximum number of profiles that can be saved</p>
             </div>
           </div>
 
           <div class="setting-group">
             <div class="setting-item">
               <label class="setting-label">
-                <span class="setting-title">除外ドメイン</span>
+                <span class="setting-title">Excluded Domains</span>
               </label>
               <textarea id="excludeDomains" class="setting-textarea" rows="4" placeholder="example.com&#10;test.org"></textarea>
-              <p class="setting-description">自動入力を無効にするドメイン（1行に1つ）</p>
+              <p class="setting-description">Domains where auto-fill is disabled (one per line)</p>
             </div>
           </div>
 
           <div class="setting-actions">
-            <button id="saveSettings" class="btn btn-primary">設定を保存</button>
-            <button id="resetSettings" class="btn btn-secondary">リセット</button>
+            <button id="saveSettings" class="btn btn-primary">Save Settings</button>
+            <button id="resetSettings" class="btn btn-secondary">Reset</button>
           </div>
         </div>
       </div>
@@ -135,22 +135,22 @@
       <!-- セキュリティタブ -->
       <div id="security-tab" class="tab-content">
         <div class="section">
-          <h2>セキュリティとプライバシー</h2>
+          <h2>Security & Privacy</h2>
 
           <div class="security-info">
             <div class="info-card">
-              <h3>🔒 データの保存について</h3>
-              <p>すべてのデータはローカルに保存され、外部サーバーには送信されません。</p>
+              <h3>🔒 Data Storage</h3>
+              <p>All data is stored locally and never transmitted to external servers.</p>
             </div>
 
             <div class="info-card">
-              <h3>🚫 機密情報の取り扱い</h3>
-              <p>パスワード、クレジットカード情報、個人番号などの機密情報は保存しないことを強く推奨します。</p>
+              <h3>🚫 Sensitive Information</h3>
+              <p>We strongly recommend not saving sensitive information such as passwords, credit cards, or personal IDs.</p>
             </div>
 
             <div class="info-card">
-              <h3>🔐 データのエクスポート</h3>
-              <p>必要に応じてプロファイルデータをエクスポートし、安全な場所にバックアップしてください。</p>
+              <h3>🔐 Data Export</h3>
+              <p>Export your profile data as needed and backup to a secure location.</p>
             </div>
           </div>
 
@@ -158,23 +158,23 @@
             <div class="setting-item">
               <label class="setting-label">
                 <input type="checkbox" id="encryptData" class="setting-checkbox">
-                <span class="setting-title">データ暗号化</span>
+                <span class="setting-title">Data Encryption</span>
               </label>
-              <p class="setting-description">保存されるデータを暗号化（実験的機能）</p>
+              <p class="setting-description">Encrypt saved data (experimental feature)</p>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">
                 <input type="checkbox" id="clearOnClose" class="setting-checkbox">
-                <span class="setting-title">ブラウザ終了時にクリア</span>
+                <span class="setting-title">Clear on Browser Close</span>
               </label>
-              <p class="setting-description">ブラウザ終了時に一時データを削除</p>
+              <p class="setting-description">Delete temporary data when browser closes</p>
             </div>
           </div>
 
           <div class="security-actions">
-            <button id="clearCache" class="btn btn-warning">キャッシュをクリア</button>
-            <button id="clearAllData" class="btn btn-danger">すべてのデータを削除</button>
+            <button id="clearCache" class="btn btn-warning">Clear Cache</button>
+            <button id="clearAllData" class="btn btn-danger">Delete All Data</button>
           </div>
         </div>
       </div>
@@ -182,45 +182,45 @@
       <!-- ヘルプタブ -->
       <div id="help-tab" class="tab-content">
         <div class="section">
-          <h2>使い方ガイド</h2>
+          <h2>User Guide</h2>
 
           <div class="help-section">
-            <h3>基本的な使い方</h3>
+            <h3>Basic Usage</h3>
             <ol class="help-list">
-              <li>テストしたいページでエクステンションアイコンをクリック</li>
-              <li>「フォームをスキャン」でページ内のフォームを検出</li>
-              <li>フォームに必要な値を入力</li>
-              <li>「現在の値を保存」でプロファイルとして保存</li>
-              <li>次回同じページで「フォームを自動入力」を使用</li>
+              <li>Click extension icon on the page you want to test</li>
+              <li>Use "Scan Forms" to detect forms on the page</li>
+              <li>Enter required values in the form</li>
+              <li>Save as profile with "Save Current Values"</li>
+              <li>Use "Auto Fill" next time on the same page</li>
             </ol>
           </div>
 
           <div class="help-section">
-            <h3>便利な機能</h3>
+            <h3>Useful Features</h3>
             <ul class="help-list">
-              <li><strong>自動入力:</strong> ページ読み込み時に自動でフォームを入力</li>
-              <li><strong>プロファイル管理:</strong> 複数のプロファイルを作成・管理</li>
-              <li><strong>エクスポート/インポート:</strong> データのバックアップと復元</li>
-              <li><strong>ドメイン除外:</strong> 特定のサイトで機能を無効化</li>
+              <li><strong>Auto Fill:</strong> Automatically fill forms when page loads</li>
+              <li><strong>Profile Management:</strong> Create and manage multiple profiles</li>
+              <li><strong>Export/Import:</strong> Backup and restore data</li>
+              <li><strong>Domain Exclusion:</strong> Disable features on specific sites</li>
             </ul>
           </div>
 
           <div class="help-section">
-            <h3>注意事項</h3>
+            <h3>Important Notes</h3>
             <ul class="help-list">
-              <li>機密情報（パスワード、クレジットカード情報など）の保存は避けてください</li>
-              <li>本エクステンションはテスト効率化を目的としています</li>
-              <li>プロダクション環境での使用は十分注意してください</li>
-              <li>定期的にデータのバックアップを取ることをお勧めします</li>
+              <li>Avoid saving sensitive information (passwords, credit cards, etc.)</li>
+              <li>This extension is designed for test efficiency</li>
+              <li>Use with caution in production environments</li>
+              <li>Regularly backup your data</li>
             </ul>
           </div>
 
           <div class="help-section">
-            <h3>トラブルシューティング</h3>
+            <h3>Troubleshooting</h3>
             <ul class="help-list">
-              <li><strong>フォームが検出されない:</strong> ページの読み込み完了後に再スキャンしてください</li>
-              <li><strong>自動入力が動作しない:</strong> フォームの構造が変更されている可能性があります</li>
-              <li><strong>データが保存されない:</strong> ブラウザの容量制限に達している可能性があります</li>
+              <li><strong>Forms not detected:</strong> Try rescanning after page fully loads</li>
+              <li><strong>Auto-fill not working:</strong> Form structure may have changed</li>
+              <li><strong>Data not saving:</strong> Browser storage limit may be reached</li>
             </ul>
           </div>
         </div>
@@ -232,12 +232,12 @@
   <div id="profileModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="modalTitle">プロファイル編集</h3>
+        <h3 id="modalTitle">Edit Profile</h3>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>プロファイル名</label>
+          <label>Profile Name</label>
           <input type="text" id="profileName" class="form-input">
         </div>
         <div class="form-group">
@@ -245,15 +245,15 @@
           <input type="text" id="profileUrl" class="form-input" readonly>
         </div>
         <div class="form-group">
-          <label>フィールドデータ</label>
+          <label>Field Data</label>
           <div id="fieldsContainer" class="fields-container">
             <!-- フィールドリストが動的に挿入されます -->
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="saveProfile" class="btn btn-primary">保存</button>
-        <button id="cancelEdit" class="btn btn-secondary">キャンセル</button>
+        <button id="saveProfile" class="btn btn-primary">Save</button>
+        <button id="cancelEdit" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
   </div>

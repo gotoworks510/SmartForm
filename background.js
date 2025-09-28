@@ -66,34 +66,48 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function saveFormProfile(profile) {
+  console.log('💾 Saving profile for:', profile.domain + profile.path);
+
   const { formProfiles = [] } = await chrome.storage.local.get(['formProfiles']);
+  console.log('📋 Current profiles count:', formProfiles.length);
 
   const existingIndex = formProfiles.findIndex(p =>
     p.domain === profile.domain && p.path === profile.path
   );
 
   if (existingIndex >= 0) {
+    console.log(`🔄 Updating existing profile at index ${existingIndex}`);
+    console.log('📝 Old values count:', formProfiles[existingIndex].values?.length || 0);
+    console.log('📝 New values count:', profile.values?.length || 0);
+
     formProfiles[existingIndex] = {
       ...formProfiles[existingIndex],
       ...profile,
       updatedAt: new Date().toISOString()
     };
+
+    console.log('✅ Profile updated successfully');
   } else {
+    console.log('✨ Creating new profile');
     profile.id = Date.now().toString();
     profile.createdAt = new Date().toISOString();
     profile.updatedAt = new Date().toISOString();
     formProfiles.push(profile);
+
+    console.log('✅ New profile created with ID:', profile.id);
   }
 
   const { settings } = await chrome.storage.local.get(['settings']);
   const maxProfiles = settings?.maxProfiles || 100;
 
   if (formProfiles.length > maxProfiles) {
+    console.log(`⚠️ Profile limit exceeded (${formProfiles.length}/${maxProfiles}), cleaning up...`);
     formProfiles.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
     formProfiles.splice(maxProfiles);
   }
 
   await chrome.storage.local.set({ formProfiles });
+  console.log('💾 Profile storage completed');
 }
 
 async function getFormProfiles(domain, path) {
@@ -110,7 +124,7 @@ function showNotification(type, message) {
   chrome.storage.local.get(['settings'], (result) => {
     if (!result.settings?.showNotifications) return;
 
-    // アイコンが存在しない場合はiconUrlを省略
+    // Omit iconUrl if icon doesn't exist
     const notificationOptions = {
       type: 'basic',
       title: 'SmartForm',
@@ -134,7 +148,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// chrome.commands API は manifest で commands を定義していない場合は使用しない
+// Don't use chrome.commands API if commands are not defined in manifest
 try {
   if (chrome.commands && typeof chrome.commands.onCommand !== 'undefined') {
     chrome.commands.onCommand.addListener((command) => {

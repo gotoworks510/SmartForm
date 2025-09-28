@@ -9,8 +9,8 @@ class SmartFormPopup {
     await this.getCurrentTab();
     this.bindEvents();
 
-    // 自動スキャンは行わず、手動でのスキャンを促す
-    this.updateStatus('「フォームをスキャン」ボタンをクリックしてください', 'default');
+    // Prompt for manual scan instead of auto-scan
+    this.updateStatus('Click "Scan Forms" to begin', 'default');
   }
 
   async getCurrentTab() {
@@ -41,14 +41,14 @@ class SmartFormPopup {
   }
 
   async scanCurrentPage() {
-    this.updateStatus('ページをスキャン中...', 'scanning');
+    this.updateStatus('Scanning page...', 'scanning');
 
     try {
       // Content Scriptとの接続をチェック
       const isConnected = await this.checkContentScriptConnection();
 
       if (!isConnected) {
-        this.updateStatus('Content Scriptを初期化中...', 'scanning');
+        this.updateStatus('Initializing content script...', 'scanning');
         await this.initializeContentScript();
       }
 
@@ -62,14 +62,14 @@ class SmartFormPopup {
         this.formsData = response.forms;
 
         // より詳細な情報を表示
-        const message = response.message || `${response.forms.length}個のフォームが見つかりました`;
+        const message = response.message || `Found ${response.forms.length} form${response.forms.length !== 1 ? 's' : ''}`;
         this.updateStatus(message, 'ready');
 
         // フォーム数とフィールド数の両方を表示
         this.updateFormCount(response.forms.length, response.totalFields, response.totalInputs);
         this.enableButtons();
       } else {
-        const errorMsg = response?.error || 'フォームが見つかりませんでした';
+        const errorMsg = response?.error || 'No forms found on this page';
         this.updateStatus(errorMsg, 'error');
         this.disableButtons();
       }
@@ -138,17 +138,17 @@ class SmartFormPopup {
   }
 
   async handleScanError(error) {
-    let errorMessage = 'スキャンエラーが発生しました';
+    let errorMessage = 'Scan error occurred';
 
     if (error.message.includes('Could not establish connection')) {
-      errorMessage = 'ページを再読み込みしてから再試行してください';
+      errorMessage = 'Please reload the page and try again';
 
       // リロードボタンを表示
       this.showReloadSuggestion();
     } else if (error.message.includes('Cannot access')) {
-      errorMessage = 'このページではスクリプトを実行できません';
+      errorMessage = 'Cannot run scripts on this page';
     } else if (error.message.includes('initialization failed')) {
-      errorMessage = 'Content Scriptの初期化に失敗しました';
+      errorMessage = 'Content script initialization failed';
     }
 
     this.updateStatus(errorMessage, 'error');
@@ -159,7 +159,7 @@ class SmartFormPopup {
     const statusEl = document.getElementById('status');
     const reloadBtn = document.createElement('button');
     reloadBtn.className = 'btn btn-secondary';
-    reloadBtn.innerHTML = '<span class="icon">🔄</span> ページを再読み込み';
+    reloadBtn.innerHTML = '<span class="icon">🔄</span> Reload Page';
     reloadBtn.style.marginTop = '10px';
 
     reloadBtn.onclick = () => {
@@ -172,11 +172,11 @@ class SmartFormPopup {
 
   async fillForms() {
     if (!this.formsData || this.formsData.length === 0) {
-      this.updateStatus('フォームデータがありません', 'error');
+      this.updateStatus('No form data available', 'error');
       return;
     }
 
-    this.updateStatus('フォームを自動入力中...', 'scanning');
+    this.updateStatus('Auto-filling forms...', 'scanning');
 
     try {
       const response = await chrome.tabs.sendMessage(this.currentTab.id, {
@@ -185,23 +185,23 @@ class SmartFormPopup {
       });
 
       if (response && response.success) {
-        this.updateStatus(`${response.filledCount}個のフィールドを入力しました`, 'ready');
+        this.updateStatus(`Filled ${response.filledCount} field${response.filledCount !== 1 ? 's' : ''}`, 'ready');
       } else {
-        this.updateStatus('自動入力に失敗しました', 'error');
+        this.updateStatus('Auto-fill failed', 'error');
       }
     } catch (error) {
       console.error('Error filling forms:', error);
-      this.updateStatus('入力エラーが発生しました', 'error');
+      this.updateStatus('Fill error occurred', 'error');
     }
   }
 
   async saveCurrentValues() {
     if (!this.formsData || this.formsData.length === 0) {
-      this.updateStatus('保存するフォームデータがありません', 'error');
+      this.updateStatus('No form data to save', 'error');
       return;
     }
 
-    this.updateStatus('現在の値を保存中...', 'scanning');
+    this.updateStatus('Saving current values...', 'scanning');
 
     try {
       const response = await chrome.tabs.sendMessage(this.currentTab.id, {
@@ -210,13 +210,13 @@ class SmartFormPopup {
 
       if (response && response.success) {
         await this.saveFormProfile(response.values);
-        this.updateStatus('値を保存しました', 'ready');
+        this.updateStatus('Values saved successfully', 'ready');
       } else {
-        this.updateStatus('値の取得に失敗しました', 'error');
+        this.updateStatus('Failed to retrieve values', 'error');
       }
     } catch (error) {
       console.error('Error saving values:', error);
-      this.updateStatus('保存エラーが発生しました', 'error');
+      this.updateStatus('Save error occurred', 'error');
     }
   }
 
@@ -226,30 +226,32 @@ class SmartFormPopup {
     const path = url.pathname;
 
     const profile = {
-      id: Date.now().toString(),
       name: `${domain}${path}`,
       domain: domain,
       path: path,
       url: this.currentTab.url,
       title: this.currentTab.title,
       values: values,
-      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
-    const { formProfiles = [] } = await chrome.storage.local.get(['formProfiles']);
+    // background.jsのsaveFormProfile関数を使用
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'saveProfile',
+        profile: profile
+      });
 
-    const existingIndex = formProfiles.findIndex(p =>
-      p.domain === domain && p.path === path
-    );
+      if (!response.success) {
+        console.error('Failed to save profile:', response.error);
+        throw new Error(response.error || 'Failed to save profile');
+      }
 
-    if (existingIndex >= 0) {
-      formProfiles[existingIndex] = { ...formProfiles[existingIndex], ...profile };
-    } else {
-      formProfiles.push(profile);
+      console.log('Profile saved successfully');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      throw error;
     }
-
-    await chrome.storage.local.set({ formProfiles });
   }
 
   updateStatus(text, type = 'default') {
@@ -271,21 +273,21 @@ class SmartFormPopup {
     const formCountText = document.getElementById('formCountText');
 
     if (formCount > 0) {
-      let text = `${formCount}個のフォームが検出されました`;
+      let text = `${formCount} form${formCount !== 1 ? 's' : ''} detected`;
 
       if (fieldCount !== null) {
-        text += ` (${fieldCount}個のフィールド)`;
+        text += ` (${fieldCount} field${fieldCount !== 1 ? 's' : ''})`;
       }
 
       if (totalInputs !== null && totalInputs !== fieldCount) {
-        text += `\nページ内の入力要素: ${totalInputs}個`;
+        text += `\nTotal input elements: ${totalInputs}`;
       }
 
       formCountText.innerHTML = text.replace('\n', '<br>');
       formCountEl.style.display = 'block';
     } else {
       if (totalInputs !== null && totalInputs > 0) {
-        formCountText.innerHTML = `フォームなし<br>入力要素: ${totalInputs}個`;
+        formCountText.innerHTML = `No forms<br>Input elements: ${totalInputs}`;
         formCountEl.style.display = 'block';
       } else {
         formCountEl.style.display = 'none';
@@ -305,14 +307,14 @@ class SmartFormPopup {
 
   showHelp() {
     const helpText = `
-SmartForm の使い方:
+How to use SmartForm:
 
-1. 「フォームをスキャン」でページ内のフォームを検出
-2. 「現在の値を保存」で入力済みの値をプロファイルとして保存
-3. 「フォームを自動入力」で保存済みの値を自動入力
-4. 「設定」でプロファイルの詳細管理
+1. Click "Scan Forms" to detect forms on the page
+2. Use "Save Current Values" to save filled values as a profile
+3. Click "Auto Fill" to restore saved values
+4. Access "Settings" for profile management
 
-注意: セキュリティのため、機密情報の保存は避けてください。
+Note: For security, avoid saving sensitive information.
     `.trim();
 
     alert(helpText);

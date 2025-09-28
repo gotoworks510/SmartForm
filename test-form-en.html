@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartForm - Test Form</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 2em;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        .form-section {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], input[type="email"], input[type="password"],
+        input[type="number"], input[type="tel"], input[type="url"],
+        input[type="date"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .checkbox-item:hover, .radio-item:hover {
+            background: #e9ecef;
+        }
+        .checkbox-item input, .radio-item input {
+            width: auto;
+            margin: 0;
+        }
+        .checkbox-item label, .radio-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+        .reset-btn:hover {
+            background: #5a6268;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .instructions ol {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .required {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 SmartForm Test Form</h1>
+        <p>Comprehensive testing ground for all form element types</p>
+    </div>
+
+    <div class="instructions">
+        <h3>🧪 Testing Instructions</h3>
+        <ol>
+            <li><strong>Fill the form</strong> with any test data</li>
+            <li><strong>Click SmartForm extension icon</strong> and press "Scan Forms"</li>
+            <li><strong>Save the values</strong> with "Save Current Values"</li>
+            <li><strong>Clear the form</strong> using the Reset button</li>
+            <li><strong>Auto-fill</strong> with "Auto Fill" to test restoration</li>
+        </ol>
+    </div>
+
+    <form id="testForm" action="#" method="post">
+        <!-- Personal Information -->
+        <div class="form-section">
+            <h2>Personal Information</h2>
+
+            <div class="form-group">
+                <label for="fullname">Full Name <span class="required">*</span></label>
+                <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter secure password">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+            </div>
+
+            <div class="form-group">
+                <label for="birthdate">Date of Birth</label>
+                <input type="date" id="birthdate" name="birthdate">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="18" max="120" placeholder="25">
+            </div>
+
+            <div class="form-group">
+                <label for="website">Personal Website</label>
+                <input type="url" id="website" name="website" placeholder="https://example.com">
+            </div>
+        </div>
+
+        <!-- Professional Information -->
+        <div class="form-section">
+            <h2>Professional Information</h2>
+
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" placeholder="Acme Corporation">
+            </div>
+
+            <div class="form-group">
+                <label for="jobtitle">Job Title</label>
+                <input type="text" id="jobtitle" name="jobtitle" placeholder="Senior Developer">
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department">
+                    <option value="">Select Department</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="design">Design</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="sales">Sales</option>
+                    <option value="hr">Human Resources</option>
+                    <option value="finance">Finance</option>
+                    <option value="operations">Operations</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Years of Experience</label>
+                <select id="experience" name="experience">
+                    <option value="">Select Experience</option>
+                    <option value="0-1">Less than 1 year</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="5-10">5-10 years</option>
+                    <option value="10+">More than 10 years</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Professional Bio</label>
+                <textarea id="bio" name="bio" placeholder="Tell us about your professional background and expertise..."></textarea>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="form-section">
+            <h2>Preferences & Settings</h2>
+
+            <!-- Radio Buttons -->
+            <div class="form-group">
+                <label>Employment Type</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="fulltime" name="employment" value="fulltime">
+                        <label for="fulltime">Full-time</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="parttime" name="employment" value="parttime">
+                        <label for="parttime">Part-time</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="contract" name="employment" value="contract">
+                        <label for="contract">Contract</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="freelance" name="employment" value="freelance">
+                        <label for="freelance">Freelance</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Another Radio Group -->
+            <div class="form-group">
+                <label>Work Location Preference</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="onsite" name="location" value="onsite">
+                        <label for="onsite">On-site</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="remote" name="location" value="remote">
+                        <label for="remote">Remote</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="hybrid" name="location" value="hybrid">
+                        <label for="hybrid">Hybrid</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkboxes -->
+            <div class="form-group">
+                <label>Skills & Technologies <span class="badge">Select all that apply</span></label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill1" name="skills" value="javascript">
+                        <label for="skill1">JavaScript / TypeScript</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill2" name="skills" value="python">
+                        <label for="skill2">Python</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill3" name="skills" value="react">
+                        <label for="skill3">React / Vue / Angular</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill4" name="skills" value="nodejs">
+                        <label for="skill4">Node.js</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill5" name="skills" value="database">
+                        <label for="skill5">SQL / NoSQL Databases</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill6" name="skills" value="cloud">
+                        <label for="skill6">Cloud Services (AWS/Azure/GCP)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill7" name="skills" value="devops">
+                        <label for="skill7">DevOps / CI/CD</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="skill8" name="skills" value="mobile">
+                        <label for="skill8">Mobile Development</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Checkboxes -->
+            <div class="form-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                    <label for="newsletter">Subscribe to newsletter</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms" name="terms" value="agreed" required>
+                    <label for="terms">I agree to the Terms of Service <span class="required">*</span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="form-section">
+            <h2>Additional Information</h2>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="">Select Country</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="ca">Canada</option>
+                    <option value="au">Australia</option>
+                    <option value="de">Germany</option>
+                    <option value="fr">France</option>
+                    <option value="jp">Japan</option>
+                    <option value="kr">South Korea</option>
+                    <option value="cn">China</option>
+                    <option value="in">India</option>
+                    <option value="br">Brazil</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="timezone">Timezone</label>
+                <select id="timezone" name="timezone">
+                    <option value="">Select Timezone</option>
+                    <option value="pst">PST (UTC-8)</option>
+                    <option value="mst">MST (UTC-7)</option>
+                    <option value="cst">CST (UTC-6)</option>
+                    <option value="est">EST (UTC-5)</option>
+                    <option value="gmt">GMT (UTC+0)</option>
+                    <option value="cet">CET (UTC+1)</option>
+                    <option value="jst">JST (UTC+9)</option>
+                    <option value="aest">AEST (UTC+10)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="comments">Comments or Special Requests</label>
+                <textarea id="comments" name="comments" placeholder="Any additional information you'd like to share..."></textarea>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="form-section" style="text-align: center;">
+            <button type="submit" class="submit-btn">Submit Form</button>
+            <button type="reset" class="reset-btn">Reset All Fields</button>
+        </div>
+    </form>
+
+    <script>
+        // Prevent actual form submission for testing
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submission prevented (test mode). Your data was not actually submitted.');
+        });
+
+        // Confirm before reset
+        document.querySelector('.reset-btn').addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to reset all form fields?')) {
+                e.preventDefault();
+            }
+        });
+
+        // Add visual feedback for SmartForm testing
+        console.log('%c📝 SmartForm Test Page Loaded', 'color: #667eea; font-size: 16px; font-weight: bold;');
+        console.log('%cThis page is designed to test all form element types with the SmartForm extension.', 'color: #666; font-size: 14px;');
+        console.log('%cInstructions:', 'color: #333; font-weight: bold;');
+        console.log('%c1. Fill out the form with test data', 'color: #666;');
+        console.log('%c2. Use SmartForm to scan and save the values', 'color: #666;');
+        console.log('%c3. Reset the form and test auto-fill functionality', 'color: #666;');
+    </script>
+</body>
+</html>

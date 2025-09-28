@@ -148,8 +148,8 @@ class SmartFormOptions {
     if (this.filteredProfiles.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <h3>プロファイルがありません</h3>
-          <p>フォームを使用してプロファイルを作成してください</p>
+          <h3>No profiles available</h3>
+          <p>Use forms to create profiles</p>
         </div>
       `;
       return;
@@ -165,16 +165,16 @@ class SmartFormOptions {
           <div class="profile-actions">
             <button class="btn btn-secondary edit-profile" data-id="${profile.id}">
               <span class="icon">✏️</span>
-              編集
+              Edit
             </button>
             <button class="btn btn-danger delete-profile" data-id="${profile.id}">
               <span class="icon">🗑️</span>
-              削除
+              Delete
             </button>
           </div>
         </div>
         <div class="profile-meta">
-          <span class="profile-fields">${profile.values?.length || 0}個のフィールド</span>
+          <span class="profile-fields">${profile.values?.length || 0} field${(profile.values?.length || 0) !== 1 ? 's' : ''}</span>
           <span>${this.formatDate(profile.updatedAt)}</span>
         </div>
       </div>
@@ -226,7 +226,7 @@ class SmartFormOptions {
     const filterSelect = document.getElementById('filterDomain');
     const domains = [...new Set(this.profiles.map(p => p.domain))].sort();
 
-    filterSelect.innerHTML = '<option value="">すべてのドメイン</option>' +
+    filterSelect.innerHTML = '<option value="">All Domains</option>' +
       domains.map(domain => `<option value="${domain}">${domain}</option>`).join('');
   }
 
@@ -253,7 +253,7 @@ class SmartFormOptions {
     this.currentProfile = this.profiles.find(p => p.id === profileId);
     if (!this.currentProfile) return;
 
-    document.getElementById('modalTitle').textContent = 'プロファイル編集';
+    document.getElementById('modalTitle').textContent = 'Edit Profile';
     document.getElementById('profileName').value = this.currentProfile.name || this.currentProfile.title;
     document.getElementById('profileUrl').value = this.currentProfile.url;
 
@@ -266,7 +266,7 @@ class SmartFormOptions {
     const fields = this.currentProfile.values || [];
 
     if (fields.length === 0) {
-      container.innerHTML = '<p>フィールドデータがありません</p>';
+      container.innerHTML = '<p>No field data available</p>';
       return;
     }
 
@@ -277,8 +277,8 @@ class SmartFormOptions {
           <div class="field-value">${this.escapeHtml(String(field.value).substring(0, 50))}${String(field.value).length > 50 ? '...' : ''}</div>
         </div>
         <div class="field-actions">
-          <button class="btn btn-secondary edit-field" data-index="${index}">編集</button>
-          <button class="btn btn-danger delete-field" data-index="${index}">削除</button>
+          <button class="btn btn-secondary edit-field" data-index="${index}">Edit</button>
+          <button class="btn btn-danger delete-field" data-index="${index}">Delete</button>
         </div>
       </div>
     `).join('');
@@ -304,7 +304,7 @@ class SmartFormOptions {
 
   editField(index) {
     const field = this.currentProfile.values[index];
-    const newValue = prompt(`フィールド「${field.label || field.name || field.id}」の値:`, field.value);
+    const newValue = prompt(`Value for field "${field.label || field.name || field.id}":`, field.value);
 
     if (newValue !== null) {
       this.currentProfile.values[index].value = newValue;
@@ -313,14 +313,14 @@ class SmartFormOptions {
   }
 
   deleteField(index) {
-    if (confirm('このフィールドを削除しますか？')) {
+    if (confirm('Delete this field?')) {
       this.currentProfile.values.splice(index, 1);
       this.renderProfileFields();
     }
   }
 
   async deleteProfile(profileId) {
-    if (!confirm('このプロファイルを削除しますか？')) return;
+    if (!confirm('Delete this profile?')) return;
 
     this.profiles = this.profiles.filter(p => p.id !== profileId);
     this.filteredProfiles = this.filteredProfiles.filter(p => p.id !== profileId);
@@ -328,7 +328,7 @@ class SmartFormOptions {
     await chrome.storage.local.set({ formProfiles: this.profiles });
     this.renderProfiles();
     this.updateStats();
-    this.showNotification('プロファイルを削除しました', 'success');
+    this.showNotification('Profile deleted', 'success');
   }
 
   async saveProfileEdit() {
@@ -345,7 +345,7 @@ class SmartFormOptions {
         await chrome.storage.local.set({ formProfiles: this.profiles });
         this.renderProfiles();
         this.updateStats();
-        this.showNotification('プロファイルを更新しました', 'success');
+        this.showNotification('Profile updated', 'success');
       }
     }
 
@@ -376,15 +376,15 @@ class SmartFormOptions {
     };
 
     await chrome.storage.local.set({ settings: this.settings });
-    this.showNotification('設定を保存しました', 'success');
+    this.showNotification('Settings saved', 'success');
   }
 
   resetSettings() {
-    if (!confirm('設定をリセットしますか？')) return;
+    if (!confirm('Reset settings?')) return;
 
     this.settings = this.getDefaultSettings();
     this.renderSettings();
-    this.showNotification('設定をリセットしました', 'info');
+    this.showNotification('Settings reset', 'info');
   }
 
   exportProfiles() {
@@ -403,7 +403,7 @@ class SmartFormOptions {
     a.click();
     URL.revokeObjectURL(url);
 
-    this.showNotification('データをエクスポートしました', 'success');
+    this.showNotification('Data exported', 'success');
   }
 
   importProfiles() {
@@ -420,7 +420,7 @@ class SmartFormOptions {
         const data = JSON.parse(text);
 
         if (data.profiles && Array.isArray(data.profiles)) {
-          if (confirm(`${data.profiles.length}個のプロファイルをインポートしますか？既存のデータは保持されます。`)) {
+          if (confirm(`Import ${data.profiles.length} profile${data.profiles.length !== 1 ? 's' : ''}? Existing data will be preserved.`)) {
 
             this.profiles = [...this.profiles, ...data.profiles];
 
@@ -437,14 +437,14 @@ class SmartFormOptions {
             this.renderProfiles();
             this.renderSettings();
             this.updateStats();
-            this.showNotification('データをインポートしました', 'success');
+            this.showNotification('Data imported', 'success');
           }
         } else {
           throw new Error('Invalid file format');
         }
       } catch (error) {
         console.error('Import error:', error);
-        this.showNotification('インポートエラー: ファイル形式が正しくありません', 'error');
+        this.showNotification('Import error: Invalid file format', 'error');
       }
     };
 
@@ -452,7 +452,7 @@ class SmartFormOptions {
   }
 
   async clearAllProfiles() {
-    if (!confirm('すべてのプロファイルを削除しますか？この操作は取り消せません。')) return;
+    if (!confirm('Delete all profiles? This action cannot be undone.')) return;
 
     this.profiles = [];
     this.filteredProfiles = [];
@@ -460,20 +460,20 @@ class SmartFormOptions {
 
     this.renderProfiles();
     this.updateStats();
-    this.showNotification('すべてのプロファイルを削除しました', 'info');
+    this.showNotification('All profiles deleted', 'info');
   }
 
   async clearCache() {
-    if (!confirm('キャッシュをクリアしますか？')) return;
+    if (!confirm('Clear cache?')) return;
 
     // Clear temporary data but keep profiles and settings
     await chrome.storage.session.clear();
-    this.showNotification('キャッシュをクリアしました', 'info');
+    this.showNotification('Cache cleared', 'info');
   }
 
   async clearAllData() {
-    if (!confirm('すべてのデータを削除しますか？この操作は取り消せません。')) return;
-    if (!confirm('本当にすべてのデータを削除しますか？プロファイルと設定がすべて失われます。')) return;
+    if (!confirm('Delete all data? This action cannot be undone.')) return;
+    if (!confirm('Really delete all data? All profiles and settings will be lost.')) return;
 
     await chrome.storage.local.clear();
     await chrome.storage.session.clear();
@@ -485,7 +485,7 @@ class SmartFormOptions {
     this.renderProfiles();
     this.renderSettings();
     this.updateStats();
-    this.showNotification('すべてのデータを削除しました', 'info');
+    this.showNotification('All data deleted', 'info');
   }
 
   updateSettingPreview() {
@@ -495,7 +495,7 @@ class SmartFormOptions {
   formatDate(timestamp) {
     if (!timestamp) return '-';
     const date = new Date(timestamp);
-    return date.toLocaleDateString('ja-JP', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
